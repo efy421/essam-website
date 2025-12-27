@@ -1005,102 +1005,153 @@ const LatestWriting = () => {
   );
 };
 
-const Footer = () => (
-  <footer className="bg-[#1a1a1a] text-white pt-24 pb-12 px-6 md:px-12 border-t border-neutral-800">
-    <div className="max-w-7xl mx-auto">
-      <div className="grid md:grid-cols-12 gap-12 mb-24">
-        <div className="md:col-span-5">
-          <h2 className="font-serif-display text-5xl mb-8">
-            Ready to <span className="italic text-neutral-500">Scale?</span>
-          </h2>
-          <p className="text-neutral-400 max-w-md font-light leading-relaxed mb-8">
-            Stop playing the "busy founder" game. Let's build a machine that
-            runs without you.
-          </p>
+const Footer = () => {
+  const [footerEmail, setFooterEmail] = useState('');
+  const [footerStatus, setFooterStatus] = useState('idle');
 
-          <div className="input-focus flex w-full max-w-md bg-white/5 border border-white/10 p-1 rounded-[14px]">
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="bg-transparent w-full px-4 text-sm text-white placeholder:text-white/40"
-              aria-label="Email address"
-            />
-            <button className="btn-micro bg-white text-black px-6 py-3 text-xs font-bold uppercase tracking-widest-custom hover:bg-neutral-200 rounded-[12px]">
-              Join
-            </button>
+  const handleFooterSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!footerEmail || !footerEmail.includes('@')) {
+      setFooterStatus('error');
+      return;
+    }
+
+    setFooterStatus('loading');
+    
+    const url = `https://api.kit.com/v3/forms/${KIT_FORM_ID}/subscribe`;
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          api_key: KIT_API_KEY,
+          email: footerEmail,
+        }),
+      });
+
+      if (response.ok) {
+        setFooterStatus('success');
+        setFooterEmail('');
+      } else {
+        setFooterStatus('error');
+      }
+    } catch (err) {
+      console.error(err);
+      setFooterStatus('error');
+    }
+  };
+
+  return (
+    <footer className="bg-[#1a1a1a] text-white pt-24 pb-12 px-6 md:px-12 border-t border-neutral-800">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-12 gap-12 mb-24">
+          <div className="md:col-span-5">
+            <h2 className="font-serif-display text-5xl mb-8">
+              Ready to <span className="italic text-neutral-500">Scale?</span>
+            </h2>
+            <p className="text-neutral-400 max-w-md font-light leading-relaxed mb-8">
+              Stop playing the "busy founder" game. Let's build a machine that
+              runs without you.
+            </p>
+
+            {footerStatus === 'success' ? (
+              <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-[14px] max-w-md">
+                <p className="text-green-400 text-sm font-medium flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Success! Check your email to confirm.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleFooterSubmit}>
+                <div className="input-focus flex w-full max-w-md bg-white/5 border border-white/10 p-1 rounded-[14px]">
+                  <input
+                    type="email"
+                    value={footerEmail}
+                    onChange={(e) => {
+                      setFooterEmail(e.target.value);
+                      if (footerStatus === 'error') setFooterStatus('idle');
+                    }}
+                    placeholder="Email Address"
+                    className="bg-transparent w-full px-4 text-sm text-white placeholder:text-white/40"
+                    aria-label="Email address"
+                    disabled={footerStatus === 'loading'}
+                  />
+                  <button 
+                    type="submit"
+                    disabled={footerStatus === 'loading'}
+                    className="btn-micro bg-white text-black px-6 py-3 text-xs font-bold uppercase tracking-widest-custom hover:bg-neutral-200 rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {footerStatus === 'loading' ? '...' : 'Join'}
+                  </button>
+                </div>
+                {footerStatus === 'error' && (
+                  <p className="mt-2 text-red-400 text-xs">Something went wrong. Please try again.</p>
+                )}
+              </form>
+            )}
+          </div>
+
+          <div className="md:col-span-1"></div>
+
+          <div className="md:col-span-2">
+            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">
+              Sitemap
+            </h4>
+            <ul className="space-y-4 text-sm text-neutral-300">
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Home</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Philosophy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Reviews</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Academy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Journal</a></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
+            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">
+              Connect
+            </h4>
+            <ul className="space-y-4 text-sm text-neutral-300">
+              <li><a href="#" className="hover:text-white transition-colors link-underline">LinkedIn</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Twitter / X</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Instagram</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Email</a></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
+            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">
+              Legal
+            </h4>
+            <ul className="space-y-4 text-sm text-neutral-300">
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Privacy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors link-underline">Terms</a></li>
+            </ul>
           </div>
         </div>
 
-        <div className="md:col-span-1"></div>
-
-        <div className="md:col-span-2">
-          <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">
-            Sitemap
-          </h4>
-          <ul className="space-y-4 text-sm text-neutral-300">
-            {['Home', 'Philosophy', 'Reviews', 'Academy', 'Journal'].map(
-              (i) => (
-                <li key={i}>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors link-underline"
-                  >
-                    {i}
-                  </a>
-                </li>
-              )
-            )}
-          </ul>
-        </div>
-
-        <div className="md:col-span-2">
-          <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">
-            Connect
-          </h4>
-          <ul className="space-y-4 text-sm text-neutral-300">
-            {['LinkedIn', 'Twitter / X', 'Instagram', 'Email'].map((i) => (
-              <li key={i}>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors link-underline"
-                >
-                  {i}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="md:col-span-2">
-          <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">
-            Legal
-          </h4>
-          <ul className="space-y-4 text-sm text-neutral-300">
-            {['Privacy', 'Terms'].map((i) => (
-              <li key={i}>
-                <a
-                  href="#"
-                  className="hover:text-white transition-colors link-underline"
-                >
-                  {i}
-                </a>
-              </li>
-            ))}
-          </ul>
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest-custom text-neutral-500">
+          <span>© 2025 UmbrellaGTM</span>
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-[#00b67a] rounded-full"></div>
+            <span>All Systems Operational</span>
+          </div>
+          <span>Lahore • Global</span>
         </div>
       </div>
+    </footer>
+  );
+};
 
-      <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest-custom text-neutral-500">
-        <span>© 2025 UmbrellaGTM</span>
-        <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 bg-[#00b67a] rounded-full"></div>
-          <span>All Systems Operational</span>
-        </div>
-        <span>Lahore • Global</span>
-      </div>
-    </div>
-  </footer>
-);
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
