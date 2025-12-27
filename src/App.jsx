@@ -53,6 +53,7 @@ const GlobalStyles = () => {
     link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
+    console.log("Use effect run")
     
     return () => {
       document.head.removeChild(link);
