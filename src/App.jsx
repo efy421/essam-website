@@ -45,29 +45,22 @@ const useReveal = (triggerOnce = true, threshold = 0.12) => {
 };
 
 /* --- GLOBAL STYLES --- */
-/* --- GLOBAL STYLES --- */
 const GlobalStyles = () => {
-  // Load Google Fonts via useEffect
   useEffect(() => {
+    // Load Google Fonts
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
-    console.log("Use effect run")
-    
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, []);
 
-  return (
-    <style>{`
+    // Inject CSS styles
+    const style = document.createElement('style');
+    style.id = 'global-styles';
+    style.textContent = `
       :root {
         --tp-green: #00b67a;
         --bg-color: #FDFBF9;
         --text-main: #1a1a1a;
-
-        /* Typography rhythm */
         --h1: clamp(3.5rem, 8vw, 6.8rem);
         --h2: clamp(2.4rem, 5vw, 4.2rem);
         --h3: clamp(1.75rem, 3vw, 2.65rem);
@@ -77,7 +70,6 @@ const GlobalStyles = () => {
         --leading-tight: 1.08;
         --leading-normal: 1.58;
         --leading-relaxed: 1.72;
-
         --radius-xl: 18px;
       }
 
@@ -93,11 +85,9 @@ const GlobalStyles = () => {
       .font-serif-display { font-family: 'Playfair Display', serif; }
       .font-sans-clean { font-family: 'Inter', sans-serif; }
 
-      /* Trustpilot */
       .tp-star-bg { background-color: var(--tp-green); }
       .tp-star-fill { fill: white; color: white; }
 
-      /* Utilities */
       .tracking-widest-custom { letter-spacing: 0.2em; }
 
       .grain-overlay {
@@ -109,7 +99,6 @@ const GlobalStyles = () => {
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
       }
 
-      /* Reveal animation base */
       .reveal-base {
         transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
         opacity: 0;
@@ -121,14 +110,12 @@ const GlobalStyles = () => {
         transform: translateY(0);
       }
 
-      /* Smooth Sticky */
       .sticky-col {
         position: sticky;
         top: 100px;
         height: fit-content;
       }
 
-      /* Video flair */
       .glow-text {
         position: relative;
         z-index: 1;
@@ -146,7 +133,6 @@ const GlobalStyles = () => {
         z-index: -1;
       }
 
-      /* Button micro interactions */
       .btn-micro {
         transition: transform 160ms ease, box-shadow 160ms ease, background-color 220ms ease, color 220ms ease;
         will-change: transform;
@@ -154,7 +140,6 @@ const GlobalStyles = () => {
       .btn-micro:hover { transform: translateY(-1px); }
       .btn-micro:active { transform: translateY(0); }
 
-      /* Inputs feel alive but quiet */
       .input-focus { position: relative; }
       .input-focus::after {
         content: '';
@@ -173,10 +158,8 @@ const GlobalStyles = () => {
 
       input:focus { outline: none; }
 
-      /* Nav polish */
       nav { will-change: backdrop-filter, background-color; }
 
-      /* Better hover focus for links */
       .link-underline {
         background-image: linear-gradient(currentColor, currentColor);
         background-position: 0 100%;
@@ -186,22 +169,31 @@ const GlobalStyles = () => {
       }
       .link-underline:hover { background-size: 100% 1px; }
       
-      /* Hide "Built with Kit" badge */
       .formkit-powered-by-convertkit-container,
       .formkit-powered-by-convertkit {
         display: none !important;
       }
       
-      /* Reduced motion */
       @media (prefers-reduced-motion: reduce) {
         .reveal-base { transition: none !important; transform: none !important; opacity: 1 !important; }
         .btn-micro { transition: none !important; }
         .input-focus::after { transition: none !important; }
       }
-    `}</style>
-  );
-};
+    `;
+    document.head.appendChild(style);
 
+    // Cleanup on unmount
+    return () => {
+      document.head.removeChild(link);
+      const existingStyle = document.getElementById('global-styles');
+      if (existingStyle) {
+        document.head.removeChild(existingStyle);
+      }
+    };
+  }, []);
+
+  return null; // No JSX needed - styles are injected via useEffect
+};
 /* --- REVEAL COMPONENT (Pure JavaScript - No TypeScript) --- */
 const Reveal = ({ children, delay = 0, className = '', depth = 'md' }) => {
   const [ref, isVisible] = useReveal();
@@ -251,11 +243,10 @@ const Navigation = ({ setCurrentPage }) => {
   return (
     <>
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ease-out border-b ${
-          scrolled
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ease-out border-b ${scrolled
             ? 'bg-[#FDFBF9]/95 backdrop-blur border-neutral-200 py-4'
             : 'bg-transparent border-transparent py-6'
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
           <button
@@ -301,9 +292,8 @@ const Navigation = ({ setCurrentPage }) => {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-[#FDFBF9] z-40 transition-transform duration-500 md:hidden flex flex-col justify-center px-8 ${
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed inset-0 bg-[#FDFBF9] z-40 transition-transform duration-500 md:hidden flex flex-col justify-center px-8 ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
       >
         <div className="flex flex-col gap-8">
           {links.map((l) => (
@@ -332,16 +322,16 @@ const EmailSubscriptionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !email.includes('@')) {
       setStatus('error');
       return;
     }
 
     setStatus('loading');
-    
+
     const url = `https://api.kit.com/v3/forms/${KIT_FORM_ID}/subscribe`;
-    
+
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -739,11 +729,10 @@ const AboutAndCapabilities = () => {
                         </span>
                         <div>
                           <h3
-                            className={`font-serif-display text-3xl transition-colors duration-300 ${
-                              active === i
+                            className={`font-serif-display text-3xl transition-colors duration-300 ${active === i
                                 ? 'text-[#1a1a1a]'
                                 : 'text-neutral-500'
-                            }`}
+                              }`}
                           >
                             {item.title}
                           </h3>
@@ -753,22 +742,20 @@ const AboutAndCapabilities = () => {
                         </div>
                       </div>
                       <div
-                        className={`transform transition-transform duration-300 ${
-                          active === i
+                        className={`transform transition-transform duration-300 ${active === i
                             ? 'rotate-45 text-neutral-900'
                             : 'text-neutral-300'
-                        }`}
+                          }`}
                       >
                         <ArrowUpRight size={24} />
                       </div>
                     </div>
 
                     <div
-                      className={`pl-12 transition-all duration-400 ease-out ${
-                        active === i
+                      className={`pl-12 transition-all duration-400 ease-out ${active === i
                           ? 'opacity-100 translate-y-0 mt-6'
                           : 'opacity-0 -translate-y-2 pointer-events-none mt-6'
-                      }`}
+                        }`}
                     >
                       <p className="text-base text-neutral-600 font-light max-w-lg">
                         {item.desc}
@@ -1025,16 +1012,16 @@ const Footer = () => {
 
   const handleFooterSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!footerEmail || !footerEmail.includes('@')) {
       setFooterStatus('error');
       return;
     }
 
     setFooterStatus('loading');
-    
+
     const url = `https://api.kit.com/v3/forms/${KIT_FORM_ID}/subscribe`;
-    
+
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -1100,7 +1087,7 @@ const Footer = () => {
                     aria-label="Email address"
                     disabled={footerStatus === 'loading'}
                   />
-                  <button 
+                  <button
                     type="submit"
                     disabled={footerStatus === 'loading'}
                     className="btn-micro bg-white text-black px-6 py-3 text-xs font-bold uppercase tracking-widest-custom hover:bg-neutral-200 rounded-[12px] disabled:opacity-50 disabled:cursor-not-allowed"
