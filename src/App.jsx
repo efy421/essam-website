@@ -9,6 +9,9 @@ import {
   X,
 } from 'lucide-react';
 
+import './App.css'; 
+import essamProfile from './assets/images/essam-shamim-400x466.webp';
+
 /* ============================================================
    KIT (CONVERTKIT) CONFIGURATION
    ============================================================ */
@@ -44,7 +47,7 @@ const useReveal = (triggerOnce = true, threshold = 0.12) => {
   return [ref, isVisible];
 };
 
-/* --- GLOBAL STYLES --- */
+/* --- GLOBAL STYLES ---
 const GlobalStyles = () => {
   useEffect(() => {
     // Load Google Fonts
@@ -194,6 +197,8 @@ const GlobalStyles = () => {
 
   return null; // No JSX needed - styles are injected via useEffect
 };
+ */
+
 /* --- REVEAL COMPONENT (Pure JavaScript - No TypeScript) --- */
 const Reveal = ({ children, delay = 0, className = '', depth = 'md' }) => {
   const [ref, isVisible] = useReveal();
@@ -624,12 +629,12 @@ const AboutAndCapabilities = () => {
           <div className="sticky-col">
             <Reveal depth="md">
               <div className="relative mb-8 group">
-                <div className="aspect-[4/5] bg-neutral-100 relative overflow-hidden grayscale contrast-125 transition-all duration-700 rounded-[var(--radius-xl)]">
-                  <div className="absolute inset-0 bg-neutral-200 flex items-center justify-center">
-                    <span className="font-serif-display text-[120px] text-white opacity-40 font-bold leading-none select-none">
-                      ES
-                    </span>
-                  </div>
+                <div className="aspect-[4/5] bg-neutral-100 relative overflow-hidden transition-all duration-700 rounded-[var(--radius-xl)]">
+                <img 
+                    src={essamProfile} 
+                    alt="Essam Shamim" 
+                    className="w-full h-full object-cover"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60"></div>
                   <div className="absolute bottom-6 left-6 border-l-2 border-white pl-4">
                     <span className="text-white text-xs font-bold uppercase tracking-widest-custom block">
@@ -1159,7 +1164,7 @@ export default function App() {
 
   return (
     <>
-      <GlobalStyles />
+      {/* <GlobalStyles /> */}
       <div className="grain-overlay" />
       <Navigation setCurrentPage={setCurrentPage} />
 
