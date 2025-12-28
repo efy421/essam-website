@@ -12,13 +12,6 @@ import {
 import './App.css'; 
 import essamProfile from './assets/images/essam-shamim-400x466.webp';
 
-/* ============================================================
-   KIT (CONVERTKIT) CONFIGURATION
-   ============================================================ */
-const KIT_FORM_ID = '8909159';
-const KIT_API_KEY = '....'; // ← PASTE YOUR API KEY HERE
-/* ============================================================ */
-
 /* --- ROBUST ANIMATION HOOK --- */
 const useReveal = (triggerOnce = true, threshold = 0.12) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -183,19 +176,12 @@ const EmailSubscriptionForm = () => {
 
     setStatus('loading');
 
-    const url = `https://api.kit.com/v3/forms/${KIT_FORM_ID}/subscribe`;
-
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          api_key: KIT_API_KEY,
-          email: email,
-        }),
-      });
+      const response = await fetch("netlify/functions/kit-subscribe.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });      
 
       if (response.ok) {
         setStatus('success');
@@ -873,19 +859,12 @@ const Footer = () => {
 
     setFooterStatus('loading');
 
-    const url = `https://api.kit.com/v3/forms/${KIT_FORM_ID}/subscribe`;
-
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          api_key: KIT_API_KEY,
-          email: footerEmail,
-        }),
-      });
+      const response = await fetch("netlify/functions/kit-subscribe.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ footerEmail }),
+      });      
 
       if (response.ok) {
         setFooterStatus('success');
