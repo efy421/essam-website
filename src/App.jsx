@@ -177,7 +177,7 @@ const EmailSubscriptionForm = () => {
     setStatus('loading');
 
     try {
-      const response = await fetch("netlify/functions/kit-subscribe.js", {
+      const response = await fetch("/.netlify/functions/kit-subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -860,7 +860,7 @@ const Footer = () => {
     setFooterStatus('loading');
 
     try {
-      const response = await fetch("netlify/functions/kit-subscribe.js", {
+      const response = await fetch("/.netlify/functions/kit-subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ footerEmail }),
