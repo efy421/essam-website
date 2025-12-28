@@ -772,19 +772,47 @@ const CourseSection = () => (
 );
 
 const LatestWriting = () => {
-  const articles = [
-    { cat: 'Operations', title: "The 'Bus Factor' Problem", date: 'Dec 2024' },
-    {
-      cat: 'GTM Engineering',
-      title: 'Clay + AI: The $100K Pipeline',
-      date: 'Nov 2024',
-    },
-    {
-      cat: 'Mindset',
-      title: 'Why Your Sales Are Inconsistent',
-      date: 'Oct 2024',
-    },
-  ];
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const res = await fetch("/.netlify/functions/beehiiv-feed");
+        const data = await res.json();
+
+        if (!cancelled) {
+          setItems(Array.isArray(data.items) ? data.items : []);
+        }
+      } catch (e) {
+        if (!cancelled) setItems([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const formatDate = (iso) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleDateString(undefined, { month: "short", year: "numeric" });
+  };
+
+  const posts = items.map((item) => ({
+    cat: item.category || "Journal",
+    title: item.title || "",
+    date: formatDate(item.date),
+    link: item.link || "#",
+  }));
 
   return (
     <section className="py-32 px-6 md:px-12 border-t border-neutral-200 bg-white">
@@ -798,48 +826,65 @@ const LatestWriting = () => {
               <h2
                 className="font-serif-display text-neutral-900"
                 style={{
-                  fontSize: 'var(--h2)',
-                  lineHeight: 'var(--leading-tight)',
+                  fontSize: "var(--h2)",
+                  lineHeight: "var(--leading-tight)",
                 }}
               >
                 Thinking.
               </h2>
             </div>
-            <button className="hidden md:flex items-center gap-2 text-[10px] uppercase tracking-widest-custom font-bold hover:text-neutral-600 transition-colors border-b border-transparent hover:border-neutral-900 pb-0.5 btn-micro">
+
+            <button
+              onClick={() => window.open("https://essam-newsletter.beehiiv.com/", "_blank")}
+              className="hidden md:flex items-center gap-2 text-[10px] uppercase tracking-widest-custom font-bold hover:text-neutral-600 transition-colors border-b border-transparent hover:border-neutral-900 pb-0.5 btn-micro"
+            >
               Read all entries <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </Reveal>
 
-        <div className="grid md:grid-cols-3 gap-12">
-          {articles.map((article, i) => (
-            <Reveal key={i} delay={i * 90} depth="sm">
-              <article className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-neutral-100 mb-8 overflow-hidden relative rounded-[var(--radius-xl)]">
-                  <div className="absolute inset-0 bg-[#F5F5F0] group-hover:bg-[#EAEAE5] transition-colors duration-700"></div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-10 font-serif-display text-9xl text-neutral-900 select-none group-hover:opacity-20 transition-opacity">
-                    {i + 1}
+        {loading ? (
+          <div className="text-neutral-500 text-sm">Loading...</div>
+        ) : posts.length === 0 ? (
+          <div className="text-neutral-500 text-sm">
+            No posts yet. Add a post in Beehiiv and it will show here.
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-12">
+            {posts.map((article, i) => (
+              <Reveal key={i} delay={i * 90} depth="sm">
+                <a
+                  href={article.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group cursor-pointer block"
+                >
+                  <div className="aspect-[4/3] bg-neutral-100 mb-8 overflow-hidden relative rounded-[var(--radius-xl)]">
+                    <div className="absolute inset-0 bg-[#F5F5F0] group-hover:bg-[#EAEAE5] transition-colors duration-700"></div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-10 font-serif-display text-9xl text-neutral-900 select-none group-hover:opacity-20 transition-opacity">
+                      {i + 1}
+                    </div>
+                    <div className="absolute top-6 left-6 text-[9px] bg-white border border-neutral-200 px-3 py-1 uppercase tracking-widest-custom font-bold shadow-sm rounded-full">
+                      {article.cat}
+                    </div>
                   </div>
-                  <div className="absolute top-6 left-6 text-[9px] bg-white border border-neutral-200 px-3 py-1 uppercase tracking-widest-custom font-bold shadow-sm rounded-full">
-                    {article.cat}
-                  </div>
-                </div>
 
-                <div className="flex flex-col justify-between items-start border-b border-neutral-200 pb-6 group-hover:border-neutral-900 transition-colors duration-500">
-                  <h3 className="text-2xl font-serif-display group-hover:text-neutral-600 transition-colors duration-300 pr-4 leading-tight mb-4">
-                    {article.title}
-                  </h3>
-                  <div className="w-full flex justify-between items-center">
-                    <span className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest">
-                      {article.date}
-                    </span>
-                    <Plus className="w-4 h-4 text-neutral-300 group-hover:text-neutral-900 group-hover:rotate-90 transition-all duration-300" />
+                  <div className="flex flex-col justify-between items-start border-b border-neutral-200 pb-6 group-hover:border-neutral-900 transition-colors duration-500">
+                    <h3 className="text-2xl font-serif-display group-hover:text-neutral-600 transition-colors duration-300 pr-4 leading-tight mb-4">
+                      {article.title}
+                    </h3>
+                    <div className="w-full flex justify-between items-center">
+                      <span className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest">
+                        {article.date}
+                      </span>
+                      <Plus className="w-4 h-4 text-neutral-300 group-hover:text-neutral-900 group-hover:rotate-90 transition-all duration-300" />
+                    </div>
                   </div>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
