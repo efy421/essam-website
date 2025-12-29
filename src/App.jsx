@@ -79,7 +79,7 @@ const Navigation = ({ setCurrentPage }) => {
     { id: 'about', label: 'Philosophy' },
     { id: 'reviews', label: 'Reviews' },
     { id: 'course', label: 'Academy' },
-    { id: 'journal', label: 'Journal' }, // Added Journal to match live site
+    { id: 'journal', label: 'Journal' }, // Direct integration
   ];
 
   const scrollToId = (id) => {
@@ -115,7 +115,12 @@ const Navigation = ({ setCurrentPage }) => {
                 key={l.id}
                 onClick={() => {
                   setCurrentPage('home');
-                  scrollToId(l.id);
+                  if (l.id === 'journal') {
+                    setCurrentPage('journal');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  } else {
+                    scrollToId(l.id);
+                  }
                 }}
                 className="text-[11px] uppercase tracking-widest-custom font-medium hover:text-neutral-500 transition-colors link-underline"
               >
@@ -149,7 +154,11 @@ const Navigation = ({ setCurrentPage }) => {
               onClick={() => {
                 setCurrentPage('home');
                 setMobileMenuOpen(false);
-                setTimeout(() => scrollToId(l.id), 80);
+                if (l.id === 'journal') {
+                    setCurrentPage('journal');
+                } else {
+                    setTimeout(() => scrollToId(l.id), 80);
+                }
               }}
               className="font-serif-display text-4xl text-left btn-micro"
             >
@@ -614,12 +623,42 @@ const AboutAndCapabilities = () => {
 
 const TrustpilotSection = () => {
   const reviews = [
-    { title: 'Finally, a real operator.', body: "Essam's systems turned our creative chaos into a predictable machine.", author: 'Michael T.', role: 'Founder, ScaleAgency' },
-    { title: 'No fluff, just engineering.', body: "The only consultant who actually understands the operational reality of 7-figure shops.", author: 'Sarah Jenkins', role: 'CEO, GrowthPartners' },
-    { title: 'ROI within 30 days.', body: 'We stopped bleeding profit within 30 days of implementing his framework.', author: 'David Chen', role: 'Director, Elevate Digital' },
-    { title: 'Saved my team 15hrs/week.', body: "I was skeptical about 'automation' but the reporting suite Essam built pays for itself.", author: 'Elena R.', role: 'COO, Apex Media' },
-    { title: 'Clear and ruthless.', body: "Clear, actionable, and ruthlessly effective strategies.", author: 'James West', role: 'Founder, West & Co.' },
-    { title: '$40k MRR added.', body: 'The GTM system we built together added $40k MRR in Q4 alone.', author: 'Marcus L.', role: 'Head of Growth, Veltra' },
+    {
+      title: 'Finally, a real operator.',
+      body: "Essam's systems turned our creative chaos into a predictable machine. We finally have a business, not just a job.",
+      author: 'Michael T.',
+      role: 'Founder, ScaleAgency',
+    },
+    {
+      title: 'No fluff, just engineering.',
+      body: "The only consultant who actually understands the operational reality of 7-figure shops. His 'boring' systems saved us.",
+      author: 'Sarah Jenkins',
+      role: 'CEO, GrowthPartners',
+    },
+    {
+      title: 'ROI within 30 days.',
+      body: 'We stopped bleeding profit within 30 days of implementing his framework. Absolutely essential for agency owners.',
+      author: 'David Chen',
+      role: 'Director, Elevate Digital',
+    },
+    {
+      title: 'Saved my team 15hrs/week.',
+      body: "I was skeptical about 'automation' but the reporting suite Essam built pays for itself ten times over.",
+      author: 'Elena R.',
+      role: 'COO, Apex Media',
+    },
+    {
+      title: 'Clear and ruthless.',
+      body: "Finally, someone who doesn't speak in 'guru' riddles. Clear, actionable, and ruthlessly effective strategies.",
+      author: 'James West',
+      role: 'Founder, West & Co.',
+    },
+    {
+      title: '$40k MRR added.',
+      body: 'The GTM system we built together added $40k MRR in Q4 alone. The ROI is undeniable.',
+      author: 'Marcus L.',
+      role: 'Head of Growth, Veltra',
+    },
   ];
 
   return (
@@ -634,34 +673,49 @@ const TrustpilotSection = () => {
             <div className="flex items-center gap-6 text-sm">
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="w-6 h-6 tp-star-bg flex items-center justify-center rounded-[6px]">
+                  <div
+                    key={i}
+                    className="w-6 h-6 tp-star-bg flex items-center justify-center rounded-[6px]"
+                  >
                     <Star className="w-4 h-4 tp-star-fill" />
                   </div>
                 ))}
               </div>
               <div className="text-left">
                 <div className="font-bold">TrustScore 4.9</div>
-                <div className="text-xs text-neutral-500">Based on 40+ Reviews</div>
+                <div className="text-xs text-neutral-500">
+                  Based on 40+ Reviews
+                </div>
               </div>
             </div>
           </div>
         </Reveal>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {reviews.map((r, i) => (
             <Reveal key={i} delay={i * 45} depth="sm">
               <div className="bg-white p-8 border border-neutral-200 hover:shadow-lg transition-shadow duration-300 h-full flex flex-col rounded-[var(--radius-xl)]">
                 <div className="flex gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <div key={s} className="w-4 h-4 tp-star-bg flex items-center justify-center rounded-[4px]">
+                    <div
+                      key={s}
+                      className="w-4 h-4 tp-star-bg flex items-center justify-center rounded-[4px]"
+                    >
                       <Star className="w-2.5 h-2.5 tp-star-fill" />
                     </div>
                   ))}
                 </div>
                 <h3 className="font-bold text-md mb-2">{r.title}</h3>
-                <p className="text-neutral-600 text-sm leading-relaxed mb-8 flex-grow">"{r.body}"</p>
+                <p className="text-neutral-600 text-sm leading-relaxed mb-8 flex-grow">
+                  "{r.body}"
+                </p>
                 <div className="pt-6 border-t border-neutral-100">
-                  <span className="block text-xs font-bold uppercase tracking-widest-custom">{r.author}</span>
-                  <span className="block text-[10px] text-neutral-400 mt-1">{r.role}</span>
+                  <span className="block text-xs font-bold uppercase tracking-widest-custom">
+                    {r.author}
+                  </span>
+                  <span className="block text-[10px] text-neutral-400 mt-1">
+                    {r.role}
+                  </span>
                 </div>
               </div>
             </Reveal>
@@ -673,17 +727,35 @@ const TrustpilotSection = () => {
 };
 
 const CourseSection = () => (
-  <section id="course" className="py-32 px-6 md:px-12 bg-[#0a0a0a] text-[#FDFBF9] relative overflow-hidden">
+  <section
+    id="course"
+    className="py-32 px-6 md:px-12 bg-[#0a0a0a] text-[#FDFBF9] relative overflow-hidden"
+  >
     <div className="max-w-7xl mx-auto relative z-10">
       <Reveal depth="sm">
         <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest-custom text-neutral-500 mb-4 block">The Academy</span>
-            <h2 className="font-serif-display" style={{ fontSize: 'var(--h2)', lineHeight: 'var(--leading-tight)' }}>Agency AI <span className="italic text-neutral-600">Systems.</span></h2>
+            <span className="text-[10px] font-bold uppercase tracking-widest-custom text-neutral-500 mb-4 block">
+              The Academy
+            </span>
+            <h2
+              className="font-serif-display"
+              style={{
+                fontSize: 'var(--h2)',
+                lineHeight: 'var(--leading-tight)',
+              }}
+            >
+              Agency AI{' '}
+              <span className="italic text-neutral-600">Systems.</span>
+            </h2>
           </div>
-          <p className="text-neutral-400 max-w-sm text-right text-sm leading-relaxed">Centralize operations using AI.</p>
+          <p className="text-neutral-400 max-w-sm text-right text-sm leading-relaxed">
+            Centralize operations and acquisition using AI. Moving from
+            "founder-led chaos" to "machine-driven order".
+          </p>
         </div>
       </Reveal>
+
       <div className="grid md:grid-cols-3 border-t border-neutral-800">
         {[
           { t: 'Lead Enrichment', d: 'Stop manual research. Use Clay and AI.' },
@@ -691,10 +763,16 @@ const CourseSection = () => (
           { t: 'Ops Redundancy', d: 'Systems that allow you to step away.' },
         ].map((item, i) => (
           <Reveal key={i} delay={i * 130} depth="sm">
-            <div className="p-10 border-r border-neutral-800 hover:bg-[#111] transition-colors h-full group">
-              <span className="text-xs font-mono text-neutral-600 mb-6 block">0{i + 1}</span>
-              <h3 className="font-serif-display text-2xl mb-4 group-hover:text-white">{item.t}</h3>
-              <p className="text-neutral-500 text-sm font-light leading-relaxed">{item.d}</p>
+            <div className="p-10 border-r border-neutral-800 border-b md:border-b-0 hover:bg-[#111] transition-colors h-full group">
+              <span className="text-xs font-mono text-neutral-600 mb-6 block">
+                0{i + 1}
+              </span>
+              <h3 className="font-serif-display text-2xl mb-4 group-hover:text-white transition-colors">
+                {item.t}
+              </h3>
+              <p className="text-neutral-500 text-sm font-light leading-relaxed">
+                {item.d}
+              </p>
             </div>
           </Reveal>
         ))}
@@ -704,7 +782,7 @@ const CourseSection = () => (
 );
 
 /* --- KIT FEED INTEGRATION (SWAPPED FROM BEEHIIV) --- */
-const LatestWriting = () => {
+const LatestWriting = ({ setCurrentPage, setPosts }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -712,25 +790,25 @@ const LatestWriting = () => {
     let cancelled = false;
     const load = async () => {
       try {
-        // SWAPPED TO KIT-FEED FUNCTION
+        // Updated to use your Kit feed function instead of Beehiiv
         const res = await fetch("/.netlify/functions/kit-feed");
         const data = await res.json();
-        if (!cancelled) setItems(Array.isArray(data.items) ? data.items : []);
+
+        if (!cancelled) {
+          const feedItems = Array.isArray(data.items) ? data.items : [];
+          setItems(feedItems);
+          setPosts(feedItems); // Sync with parent for Archive view
+        }
       } catch (e) {
         if (!cancelled) setItems([]);
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
+
     load();
     return () => { cancelled = true; };
-  }, []);
-
-  const formatDate = (iso) => {
-    if (!iso) return "";
-    const d = new Date(iso);
-    return d.toLocaleDateString(undefined, { month: "short", year: "numeric" });
-  };
+  }, [setPosts]);
 
   return (
     <section id="journal" className="py-32 px-6 md:px-12 border-t border-neutral-200 bg-white">
@@ -738,33 +816,61 @@ const LatestWriting = () => {
         <Reveal depth="sm">
           <div className="flex justify-between items-end mb-20">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest-custom text-neutral-400 mb-4 block">Journal</span>
-              <h2 className="font-serif-display text-neutral-900 text-6xl">Thinking.</h2>
+              <span className="text-[10px] font-bold uppercase tracking-widest-custom text-neutral-400 mb-4 block">
+                Journal
+              </span>
+              <h2 className="font-serif-display text-neutral-900 text-6xl">
+                Thinking.
+              </h2>
             </div>
-            <button onClick={() => window.open("https://essam-newsletter.beehiiv.com/", "_blank")} className="hidden md:flex items-center gap-2 text-[10px] uppercase font-bold hover:text-neutral-600 transition-colors border-b border-transparent hover:border-neutral-900 pb-0.5 btn-micro">
+
+            <button
+              onClick={() => {
+                  setCurrentPage('journal'); // Switched to internal view
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 text-[10px] uppercase tracking-widest-custom font-bold hover:text-neutral-600 transition-colors border-b border-transparent hover:border-neutral-900 pb-0.5 btn-micro"
+            >
               Read all entries <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </Reveal>
+
         {loading ? (
           <div className="text-neutral-500 text-sm font-mono uppercase">Loading Entries...</div>
         ) : items.length === 0 ? (
-          <div className="text-neutral-500 text-sm">No entries found.</div>
+          <div className="text-neutral-500 text-sm font-mono uppercase">
+            No entries found. Ensure your Kit URL is correct in Netlify.
+          </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-12">
             {items.slice(0, 3).map((article, i) => (
               <Reveal key={i} delay={i * 90} depth="sm">
-                <a href={article.link} target="_blank" rel="noreferrer" className="group cursor-pointer block">
-                  <div className="aspect-[4/3] bg-neutral-100 mb-8 overflow-hidden relative rounded-2xl">
+                <a
+                  href={article.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group cursor-pointer block"
+                >
+                  <div className="aspect-[4/3] bg-neutral-100 mb-8 overflow-hidden relative rounded-[var(--radius-xl)]">
                     <div className="absolute inset-0 bg-[#F5F5F0] group-hover:bg-[#EAEAE5] transition-colors duration-700"></div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-10 font-serif-display text-9xl text-neutral-900 select-none">{i + 1}</div>
-                    <div className="absolute top-6 left-6 text-[9px] bg-white border border-neutral-200 px-3 py-1 uppercase font-bold shadow-sm rounded-full">Entry</div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-10 font-serif-display text-9xl text-neutral-900 select-none group-hover:opacity-20 transition-opacity">
+                      {i + 1}
+                    </div>
+                    <div className="absolute top-6 left-6 text-[9px] bg-white border border-neutral-200 px-3 py-1 uppercase tracking-widest-custom font-bold shadow-sm rounded-full">
+                      Entry
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-between items-start border-b border-neutral-200 pb-6 group-hover:border-neutral-900 transition-colors">
-                    <h3 className="text-2xl font-serif-display group-hover:text-neutral-600 transition-colors duration-300 mb-4">{article.title}</h3>
+
+                  <div className="flex flex-col justify-between items-start border-b border-neutral-200 pb-6 group-hover:border-neutral-900 transition-colors duration-500">
+                    <h3 className="text-2xl font-serif-display group-hover:text-neutral-600 transition-colors duration-300 pr-4 leading-tight mb-4">
+                      {article.title}
+                    </h3>
                     <div className="w-full flex justify-between items-center">
-                      <span className="text-[10px] text-neutral-400 font-mono uppercase">{formatDate(article.date)}</span>
-                      <Plus className="w-4 h-4 text-neutral-300 group-hover:rotate-90 transition-all" />
+                      <span className="text-[10px] text-neutral-400 font-mono uppercase tracking-widest">
+                        {article.date}
+                      </span>
+                      <Plus className="w-4 h-4 text-neutral-300 group-hover:text-neutral-900 group-hover:rotate-90 transition-all duration-300" />
                     </div>
                   </div>
                 </a>
@@ -777,76 +883,116 @@ const LatestWriting = () => {
   );
 };
 
-const Footer = () => {
-  const [footerEmail, setFooterEmail] = useState('');
-  const [footerStatus, setFooterStatus] = useState('idle');
+/* --- JOURNAL ARCHIVE VIEW (Stay on site) --- */
+const JournalArchive = ({ posts }) => (
+  <section className="pt-40 pb-32 px-6 md:px-12 bg-[#FDFBF9] min-h-screen">
+    <div className="max-w-7xl mx-auto">
+      <Reveal>
+        <div className="mb-8">
+           <span className="text-[10px] font-bold uppercase tracking-widest-custom text-neutral-400">Archive</span>
+        </div>
+        <h1 className="font-serif-display text-7xl md:text-9xl mb-20">Newsletter.</h1>
+      </Reveal>
 
-  const handleFooterSubmit = async (e) => {
-    e.preventDefault();
-    if (!footerEmail.includes('@')) { setFooterStatus('error'); return; }
-    setFooterStatus('loading');
-    try {
-      const response = await fetch("/.netlify/functions/kit-subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: footerEmail }),
-      });      
-      if (response.ok) { setFooterStatus('success'); setFooterEmail(''); } 
-      else { setFooterStatus('error'); }
-    } catch (err) { setFooterStatus('error'); }
-  };
+      <div className="grid grid-cols-1 gap-8">
+        {posts.map((post, i) => (
+          <Reveal key={i} delay={i * 100} depth="sm">
+            <a 
+              href={post.link} 
+              target="_blank" 
+              rel="noreferrer"
+              className="group flex flex-col md:flex-row justify-between items-start md:items-center py-10 border-b border-neutral-200 hover:border-neutral-900 transition-colors"
+            >
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] text-neutral-400 font-mono uppercase">{post.date}</span>
+                <h3 className="font-serif-display text-3xl group-hover:text-neutral-600 transition-colors">
+                  {post.title}
+                </h3>
+              </div>
+              <Plus className="w-5 h-5 text-neutral-300 group-hover:rotate-90 transition-all duration-300" />
+            </a>
+          </Reveal>
+        ))}
+      </div>
+    </div>
+  </section>
+);
 
-  return (
+const Footer = () => (
     <footer className="bg-[#1a1a1a] text-white pt-24 pb-12 px-6 md:px-12 border-t border-neutral-800">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-12 gap-12 mb-24">
           <div className="md:col-span-5">
-            <h2 className="font-serif-display text-5xl mb-8">Ready to <span className="italic text-neutral-500">Scale?</span></h2>
-            <p className="text-neutral-400 max-w-md font-light leading-relaxed mb-8">Stop playing the "busy founder" game.</p>
-            {footerStatus === 'success' ? (
-              <p className="text-green-400 text-sm">Success! Check your email.</p>
-            ) : (
-              <form onSubmit={handleFooterSubmit}>
-                <div className="input-focus flex w-full max-w-md bg-white/5 border border-white/10 p-1 rounded-[14px]">
-                  <input type="email" value={footerEmail} onChange={(e) => setFooterEmail(e.target.value)} placeholder="Email Address" className="bg-transparent w-full px-4 text-sm" />
-                  <button type="submit" disabled={footerStatus === 'loading'} className="btn-micro bg-white text-black px-6 py-3 rounded-[12px]">JOIN</button>
-                </div>
-              </form>
-            )}
+            <h2 className="font-serif-display text-5xl mb-8">
+              Ready to <span className="italic text-neutral-500">Scale?</span>
+            </h2>
+            <p className="text-neutral-400 max-w-md font-light leading-relaxed mb-8">
+              Stop playing the "busy founder" game. Let's build a machine that
+              runs without you.
+            </p>
+            <EmailSubscriptionForm />
           </div>
+
           <div className="md:col-span-1"></div>
+
           <div className="md:col-span-2">
-            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">Sitemap</h4>
-            <ul className="space-y-4 text-sm text-neutral-300"><li>Home</li><li>Philosophy</li><li>Reviews</li><li>Academy</li><li>Journal</li></ul>
+            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">SITEMAP</h4>
+            <ul className="space-y-4 text-sm text-neutral-300">
+              <li>Home</li><li>Philosophy</li><li>Reviews</li><li>Academy</li><li>Journal</li>
+            </ul>
           </div>
+
           <div className="md:col-span-2">
-            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">Connect</h4>
-            <ul className="space-y-4 text-sm text-neutral-300"><li>LinkedIn</li><li>Twitter / X</li><li>Instagram</li><li>Email</li></ul>
+            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">CONNECT</h4>
+            <ul className="space-y-4 text-sm text-neutral-300">
+              <li>LinkedIn</li><li>Twitter / X</li><li>Instagram</li><li>Email</li>
+            </ul>
           </div>
+
           <div className="md:col-span-2">
-            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">Legal</h4>
-            <ul className="space-y-4 text-sm text-neutral-300"><li>Privacy</li><li>Terms</li></ul>
+            <h4 className="text-xs font-bold uppercase tracking-widest-custom mb-8 text-neutral-500">LEGAL</h4>
+            <ul className="space-y-4 text-sm text-neutral-300">
+              <li>Privacy</li><li>Terms</li>
+            </ul>
           </div>
         </div>
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase text-neutral-500">
+
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest-custom text-neutral-500">
           <span>© 2025 UmbrellaGTM</span>
-          <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-[#00b67a] rounded-full"></div><span>All Systems Operational</span></div>
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-[#00b67a] rounded-full"></div>
+            <span>All Systems Operational</span>
+          </div>
           <span>Lahore • Global</span>
         </div>
       </div>
     </footer>
-  );
-};
+);
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [posts, setPosts] = useState([]);
+
   return (
     <>
       <div className="grain-overlay" />
       <Navigation setCurrentPage={setCurrentPage} />
+
       <main>
-        <Hero /><PhilosophyManifesto /><AboutAndCapabilities /><TrustpilotSection /><CourseSection /><LatestWriting />
+        {currentPage === 'home' ? (
+          <>
+            <Hero />
+            <PhilosophyManifesto />
+            <AboutAndCapabilities />
+            <TrustpilotSection />
+            <CourseSection />
+            <LatestWriting setCurrentPage={setCurrentPage} setPosts={setPosts} />
+          </>
+        ) : (
+          <JournalArchive posts={posts} />
+        )}
       </main>
+
       <Footer />
     </>
   );
